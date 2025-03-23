@@ -1,0 +1,32 @@
+services:
+  nextjs:
+    build: #コンテナ1
+      dockerfile: ./Dockerfile.nextjs
+    container_name: nextjs #コンテナ名
+    command: npm run dev
+    volumes:
+      - ./:/page
+    ports:
+      - 3000:3000
+
+  # database: #コンテナ2
+  #   image: mysql:8.4
+  #   container_name: database #コンテナ名
+  #   # command: --skip-grant-tables --skip-networking #MySQLサーバーは特定のセキュリティ機能を無効
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: tt #rootパスワード
+  #     MYSQL_USER: tt #ユーザ名
+  #     MYSQL_PASSWORD: tt #パスワード
+  #     MYSQL_DATABASE: Reservation_Site #データベース名
+  #   volumes:
+  #     - database:/var/lib/mysql
+  #     # - ./../DB/mysql/:/docker-entrypoint-initdb.d #/init.sql #初期化スクリプト
+  #   ports:
+  #     - "3306:3306"
+
+networks: #ネットワーク
+  default:
+    name: nextjs-test-network
+
+volumes: #ボリューム
+  database:

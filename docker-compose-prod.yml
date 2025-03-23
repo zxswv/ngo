@@ -1,0 +1,21 @@
+services:
+  nextjs: #コンテナ1
+    build:
+      dockerfile: ./Dockerfile.nextjs.prod #ここだけ本番環境用に変更
+    container_name: nextjs
+    ports:
+      - 3000:3000
+  # database: #コンテナ2
+  #   image: mysql:8.4
+  #   container_name: database
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: tt #rootパスワード
+  #     MYSQL_USER: tt #ユーザ名
+  #     MYSQL_PASSWORD: tt #パスワード
+  #     MYSQL_DATABASE: Reservation_Site #データベース名
+
+networks: #ネットワーク
+  default:
+    name: nextjs-test-network
+# volumes: #ボリューム
+
