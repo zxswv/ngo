@@ -7,7 +7,7 @@ services:
     volumes:
       - ./:/page
     ports:
-      - 3000:3000
+      - 3100:3100
 
   # database: #コンテナ2
   #   image: mysql:8.4
