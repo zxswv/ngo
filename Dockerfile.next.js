@@ -8,4 +8,4 @@ RUN npm install
 
 COPY . /ngo/
 #起動プロトコル
-CMD ["npm","run", "dev"]
+CMD ["npm","run", "dev" ]

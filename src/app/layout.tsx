@@ -1,23 +1,12 @@
-"use client";
+// "use client";
 import "./globals.css";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import type { Metadata } from "next";
+import Navbar from "./components/common/Navbar";
 
-function NavLink({ href, label }: { href: string; label: string }) {
-  const pathname = usePathname();
-  const isActive = pathname === href;
-
-  return (
-    <Link
-      href={href}
-      className={`px-4 py-2 rounded ${
-        isActive ? "bg-blue-600 text-white" : "text-gray-700 hover:bg-gray-200"
-      }`}
-    >
-      {label}
-    </Link>
-  );
-}
+export const metadata: Metadata = {
+  title: "Next.js カレンダー",
+  description: "カスタムスケジューラ",
+};
 
 export default function RootLayout({
   children,
@@ -26,17 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className="font-sans bg-gray-50 text-gray-800">
-        <header className="bg-white shadow mb-4">
-          <div className="max-w-5xl mx-auto px-4 py-3 flex gap-4 items-center">
-            <h1 className="text-xl font-bold">My Calendar App</h1>
-            <nav className="flex gap-2 ml-auto">
-              <NavLink href="/" label="ホーム" />
-              <NavLink href="/calendar" label="カレンダー" />
-            </nav>
-          </div>
-        </header>
-        <main className="max-w-5xl mx-auto px-4">{children}</main>
+      <body className="bg-gray-50 text-gray-800">
+        <Navbar />
+        <main className="max-w-5xl mx-auto px-4 py-6">{children}</main>
       </body>
     </html>
   );

@@ -1,8 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 実装予定
+
+月送りボタンを
+
+# 技術スタック
+
+## 共通
+
+Node.js
+Next.js
+
+## フロントエンド
+
+React
+
+## バックエンド
+
+## データベース
+
+PostgreSQL
 
 # サーバーコマンド一覧
 
 ## 起動コマンド
+
 ```bash
 npm run dev # next.jsの起動コマンド
 # or
@@ -12,7 +32,8 @@ docker-compose up # 起動コマンド
 # or
 
 ```
-## docker操作
+
+## docker 操作
 
 ```bash
 docker-compose up # 起動コマンド
@@ -44,14 +65,14 @@ mysql -u # MySQLにアクセス
 # or
 mysql -u root -p # MySQLコンテナ内で、MySQLシェルにrootにログイン
 # or
-SHOW DATABASES; # データベースの一覧を表示する 
+SHOW DATABASES; # データベースの一覧を表示する
 # or
-SHOW TABLES; # データベースのテーブル一覧を表示する 
+SHOW TABLES; # データベースのテーブル一覧を表示する
 # or
 USE データベース名; # 使用するデータベースを選択する
-# or 
-SHOW TABLES; # テーブルの一覧を表示する 
-# or 
+# or
+SHOW TABLES; # テーブルの一覧を表示する
+# or
 DESCRIBE table_name; # テーブルの構造を表示する
 # or
 
@@ -69,7 +90,8 @@ IF NOT EXISTS # 同名のデータベースが既に存在する場合にエラ�
 
 ```
 
-### SQLの情報
+### SQL の情報
+
 ```bash
   database: #コンテナ2
     image: mysql:8.3.0
@@ -84,6 +106,7 @@ IF NOT EXISTS # 同名のデータベースが既に存在する場合にエラ�
 ```
 
 ### SHOW DATABASES; を実行した際
+
 ```bash
     Reservation_Site # 今回使うデータベース名
     information_schema # MySQLデータベースのメタデータ
@@ -93,20 +116,20 @@ IF NOT EXISTS # 同名のデータベースが既に存在する場合にエラ�
     sys # MySQLの内部管理、セッション、ステートメントなどの情報
 ```
 
-# docker説明 
+# docker 説明
 
-### docker-compose.yml と docker-compose-prod.yml主な違いのまとめ
+### docker-compose.yml と docker-compose-prod.yml 主な違いのまとめ
 
 - 用途の違い\
-docker-compose.yml: 開発環境用。ローカルでの開発とデバッグに最適。\
-docker-compose-prod.yml: 本番環境用。デプロイと運用に最適。\
+  docker-compose.yml: 開発環境用。ローカルでの開発とデバッグに最適。\
+  docker-compose-prod.yml: 本番環境用。デプロイと運用に最適。\
 
 - 設定の違い:\
-開発用では、ホットリロードやデバッグツールの設定を含むことが多い。\
-本番用では、パフォーマンスやセキュリティを考慮し、不要な開発ツールやデバッグ設定を省略。\
+  開発用では、ホットリロードやデバッグツールの設定を含むことが多い。\
+  本番用では、パフォーマンスやセキュリティを考慮し、不要な開発ツールやデバッグ設定を省略。\
 
 - 環境変数:\
-本番用ではNODE_ENV=productionのように環境変数を設定し、最適なパフォーマンスを発揮するようにします。\
+  本番用では NODE_ENV=production のように環境変数を設定し、最適なパフォーマンスを発揮するようにします。\
 
 ### docker-compose.yml
 
@@ -115,20 +138,21 @@ docker-compose-prod.yml: 本番環境用。デプロイと運用に最適。\
 - 特徴:
 
 - ローカル開発で必要な設定を含む。
-より頻繁なコード変更やデバッグに対応。\
-デバッグツールやホットリロードなど、開発を助けるための設定が含まれることが多い。\
-ボリュームマウントを利用して、ホストのファイルシステムとコンテナ内のファイルシステムを同期。\
+  より頻繁なコード変更やデバッグに対応。\
+  デバッグツールやホットリロードなど、開発を助けるための設定が含まれることが多い。\
+  ボリュームマウントを利用して、ホストのファイルシステムとコンテナ内のファイルシステムを同期。\
 
 #
 
 ### docker-compose-prod.yml
+
 主な用途: 本番環境の設定。
 
 - 特徴:
 
 - 本番環境でのデプロイに必要な設定を含む。\
-高可用性、スケーラビリティ、セキュリティを考慮した設定。\
-デバッグツールやホットリロードなどの開発用の設定を省略。\
-パフォーマンス最適化のための設定が含まれることが多い。
+  高可用性、スケーラビリティ、セキュリティを考慮した設定。\
+  デバッグツールやホットリロードなどの開発用の設定を省略。\
+  パフォーマンス最適化のための設定が含まれることが多い。
 
 #
