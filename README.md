@@ -1,6 +1,7 @@
 # 実装予定
 
-月送りボタンを
+ハンバーガーメニュー化
+予定表示
 
 # 技術スタック
 
@@ -18,6 +19,15 @@ React
 ## データベース
 
 PostgreSQL
+
+## ライブラリー
+
+framer-motion
+react-icons
+nodemailer
+npm install nodemailer
+TypeScript を使用している場合は、型定義もインストールする
+npm install --save-dev @types/nodemailer
 
 # サーバーコマンド一覧
 

@@ -5,16 +5,18 @@
 import { createContext, useContext, useState } from "react";
 
 type CalendarContextType = {
-  currentYear: number;
-  currentMonth: number;
+  modalOpen: boolean;
+  currentYear: number; //現在の年
+  currentMonth: number; //現在の月
   selectedDate: Date | null;
   setSelectedDate: (date: Date) => void;
-  modalOpen: boolean;
   openModal: () => void;
   closeModal: () => void;
   events: Record<string, string[]>;
   addEvent: (dateKey: string, text: string) => void;
   deleteEvent: (dateKey: string, index: number) => void;
+  prevMonth: () => void; //前の月に移動するための関数
+  nextMonth: () => void; //次の月に移動するための関数
 };
 
 const CalendarContext = createContext<CalendarContextType | undefined>(
@@ -23,12 +25,13 @@ const CalendarContext = createContext<CalendarContextType | undefined>(
 
 export function CalendarProvider({ children }: { children: React.ReactNode }) {
   const today = new Date();
-  const [currentYear] = useState(today.getFullYear());
-  const [currentMonth] = useState(today.getMonth());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [events, setEvents] = useState<Record<string, string[]>>({});
+  const [currentYear, setCurrentYear] = useState(today.getFullYear()); //現在の年
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth()); //現在の月
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null); //選択された日付
+  const [modalOpen, setModalOpen] = useState(false); //モーダルの開閉状態
+  const [events, setEvents] = useState<Record<string, string[]>>({}); //イベントの状態
 
+  //日付をキーにしてイベントを管理するための状態
   const addEvent = (dateKey: string, text: string) => {
     setEvents((prev) => ({
       ...prev,
@@ -36,6 +39,7 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
+  //イベントを削除するための関数
   const deleteEvent = (dateKey: string, index: number) => {
     setEvents((prev) => {
       const updated = { ...prev };
@@ -44,19 +48,43 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  //次の月に移動するための関数
+  const prevMonth = () => {
+    setCurrentMonth((prev) => {
+      if (prev === 0) {
+        setCurrentYear((y) => y - 1);
+        return 11;
+      }
+      return prev - 1;
+    });
+  };
+
+  //前の月に移動するための関数
+  const nextMonth = () => {
+    setCurrentMonth((prev) => {
+      if (prev === 11) {
+        setCurrentYear((y) => y + 1);
+        return 0;
+      }
+      return prev + 1;
+    });
+  };
+
   return (
     <CalendarContext.Provider
       value={{
-        currentYear,
-        currentMonth,
-        selectedDate,
-        setSelectedDate,
-        modalOpen,
-        openModal: () => setModalOpen(true),
-        closeModal: () => setModalOpen(false),
-        events,
-        addEvent,
-        deleteEvent,
+        currentYear, //現在の年
+        currentMonth, //現在の月
+        prevMonth, //前の月に移動するための関数
+        nextMonth, //次の月に移動するための関数
+        selectedDate, //選択された日付
+        setSelectedDate, //選択された日付を設定するための関数
+        modalOpen, //モーダルの開閉状態
+        openModal: () => setModalOpen(true), //モーダルを開くための関数
+        closeModal: () => setModalOpen(false), //モーダルを閉じるための関数
+        events, //イベントの状態
+        addEvent, //イベントを追加するための関数
+        deleteEvent, //イベントを削除するための関数
       }}
     >
       {children}

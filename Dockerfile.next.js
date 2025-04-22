@@ -1,11 +1,14 @@
 FROM node:20
 
-WORKDIR /ngo
+WORKDIR /app
 
-COPY package.json /ngo/
+COPY package.json package-lock.json ./
 
 RUN npm install
 
-COPY . /ngo/
+COPY . .
+
+EXPOSE 3100
+
 #起動プロトコル
 CMD ["npm","run", "dev" ]

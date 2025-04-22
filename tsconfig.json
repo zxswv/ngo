@@ -27,8 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/components/common/Navbar.jsx",
-    "src/app/components/common/Navbar.jsx"
+    "src/app/components/common/Navbar.ssx",
+    "src/app/components/common/Navbar.ssx"
   ],
   "exclude": ["node_modules"]
 }

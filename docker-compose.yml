@@ -4,10 +4,10 @@ services:
       context: . #コンテキスト
       dockerfile: ./Dockerfile.next.js
     container_name: next.js #コンテナ名
-    working_dir: /app #作業ディレクトリを/appに設定
+    working_dir: /ngo #作業ディレクトリを/appに設定
     command: npm run dev -- -p 3100 #ポート3100で起動
-    volumes:
-      - ./:/page
+    # volumes:
+    #   - .:/pages
     ports:
       - 3100:3100
     depends_on:
@@ -25,7 +25,7 @@ services:
       POSTGRES_DB: DB #データベース名
     volumes:
       - db:/var/lib/postgresql/data #データ永続化
-      - ./src/app/DB/init.sql/:/docker-entrypoint-initd.d #/init.sql #初期化スクリプト
+      - ./src/app/DB/init.sql:/docker-entrypoint-initd.d/init.sql #/init.sql #初期化スクリプト
     ports:
       - "5432:5432" #ホストのポート5432をコンテナのポート5432にマッピング
 

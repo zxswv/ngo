@@ -6,10 +6,11 @@
     page.tsx               #// ルーティングエントリ
   /components
     /calendar
-      Calendar.tsx         #// メインカレンダーUI       //UI描画とスタイル
+      Calendar.tsx         #// メインカレンダーUI       //カレンダー状態のグローバル管理
       CalendarCell.tsx     #// 各セル                  //UI描画とスタイル
       context.tsx          #// 状態管理用 Context
       modal.tsx            #// モーダルUI              //予定CRUD + モーダルUI
+      MonthHeader.tsx      #// 月送りボタンの UI
       ScheduleSidebar.tsx  #// 予定表示＆＋ボタン付きUI
       types.ts             #// 型定義
       utils.ts             #// 日付生成ロジック
