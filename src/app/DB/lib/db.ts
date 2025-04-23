@@ -2,9 +2,9 @@
 import { Pool } from "pg";
 
 export const pool = new Pool({
-  user: "calendar_user",
-  host: "localhost",
-  database: "calendar_db",
-  password: "calendar_pass",
-  port: 5432,
+  user: "tt", // ユーザー名
+  host: "db", // ホスト名
+  database: "DB", // データベース名
+  password: "tt", // パスワード
+  port: 5432, // ポート番号
 });

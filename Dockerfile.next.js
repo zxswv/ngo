@@ -1,6 +1,6 @@
 FROM node:20
 
-WORKDIR /app
+WORKDIR /ngo
 
 COPY package.json package-lock.json ./
 

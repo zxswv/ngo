@@ -1,4 +1,4 @@
-// /components/common/Navbar.tsx
+// src/app/components/common/Navbar.tsx
 "use client";
 
 import Link from "next/link";
@@ -16,60 +16,6 @@ export default function Navbar() {
   ];
 
   const isActive = (href: string) => pathname === href;
-
-  // return (
-  //   <header className="bg-white shadow">
-  //     <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-  //       <div className="text-xl font-bold">📅 Calendar App</div>
-
-  //       {/* Desktop Nav */}
-  //       <nav className="hidden md:flex gap-4 items-center">
-  //         {links.map(({ href, label, icon }) => (
-  //           <Link
-  //             key={href}
-  //             href={href}
-  //             className={`flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-200 ${
-  //               isActive(href) ? "bg-blue-600 text-white" : "text-gray-700"
-  //             }`}
-  //           >
-  //             {icon}
-  //             {label}
-  //           </Link>
-  //         ))}
-  //         <UserMenu />
-  //       </nav>
-
-  //       {/* Hamburger */}
-  //       <div className="md:hidden flex items-center gap-3">
-  //         <button className="text-2xl" onClick={() => setIsOpen(!isOpen)}>
-  //           <FaBars />
-  //         </button>
-  //       </div>
-  //     </div>
-
-  //     {/* Mobile Nav */}
-  //     {isOpen && (
-  //       <div className="md:hidden px-4 pb-3">
-  //         {links.map(({ href, label, icon }) => (
-  //           <Link
-  //             key={href}
-  //             href={href}
-  //             className={`flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-200 ${
-  //               isActive(href) ? "bg-blue-600 text-white" : "text-gray-700"
-  //             }`}
-  //             onClick={() => setIsOpen(false)}
-  //           >
-  //             {icon}
-  //             {label}
-  //           </Link>
-  //         ))}
-  //         <div className="mt-2">
-  //           <UserMenu />
-  //         </div>
-  //       </div>
-  //     )}
-  //   </header>
-  // );
 
   return (
     <header className="bg-white shadow">
@@ -127,7 +73,6 @@ export default function Navbar() {
 }
 
 function UserMenu() {
-  // ログイン状態によって切り替える予定
   const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
@@ -138,7 +83,7 @@ function UserMenu() {
 
     if (token) {
       try {
-        const payload = JSON.parse(atob(token.split(".")[1])); //JWT payloadデコード
+        const payload = JSON.parse(atob(token.split(".")[1]));
         setEmail(payload.email);
       } catch (e) {
         console.error("無効なトークンです");
@@ -147,7 +92,7 @@ function UserMenu() {
   }, []);
 
   const handleLogout = async () => {
-    await fetch("../../api/auth/logout/");
+    await fetch("/api/auth/logout", { method: "GET" });
     location.reload();
   };
 
@@ -165,7 +110,7 @@ function UserMenu() {
           </button>
         </>
       ) : (
-        <Link href="../../login/" className="text-sm hover:underline">
+        <Link href="/login" className="text-sm hover:underline">
           ゲスト（ログイン）
         </Link>
       )}
