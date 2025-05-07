@@ -10,14 +10,14 @@ export enum Permission {
   VIEW_LOGS = "view_logs",
   MANAGE_USERS = "manage_users",
   MANAGE_ROLES = "manage_roles",
-  VIEW_ALL_EVENTS = "view_all_events"
+  VIEW_ALL_EVENTS = "view_all_events",
 }
 
 // ロールの種類
 export enum Role {
   ADMIN = "admin",
   TEACHER = "teacher",
-  STUDENT = "student"
+  STUDENT = "student",
 }
 
 // ユーザーのロール情報を取得
@@ -30,8 +30,8 @@ export async function getUserRoles(userId: string): Promise<string[]> {
        WHERE ur.user_id = $1`,
       [userId]
     );
-    
-    return result.rows.map(row => row.name);
+
+    return result.rows.map((row) => row.name);
   } catch (error) {
     console.error("ユーザーロール取得エラー:", error);
     return [];
@@ -49,8 +49,8 @@ export async function getUserPermissions(userId: string): Promise<string[]> {
        WHERE ur.user_id = $1`,
       [userId]
     );
-    
-    return result.rows.map(row => row.name);
+
+    return result.rows.map((row) => row.name);
   } catch (error) {
     console.error("ユーザー権限取得エラー:", error);
     return [];
@@ -58,7 +58,10 @@ export async function getUserPermissions(userId: string): Promise<string[]> {
 }
 
 // ユーザーが特定の権限を持っているか確認
-export async function hasPermission(userId: string, permission: Permission): Promise<boolean> {
+export async function hasPermission(
+  userId: string,
+  permission: Permission
+): Promise<boolean> {
   try {
     const permissions = await getUserPermissions(userId);
     return permissions.includes(permission);
@@ -80,20 +83,23 @@ export async function hasRole(userId: string, role: Role): Promise<boolean> {
 }
 
 // ユーザーにロールを割り当てる
-export async function assignRoleToUser(userId: string, roleName: Role): Promise<boolean> {
+export async function assignRoleToUser(
+  userId: string,
+  roleName: Role
+): Promise<boolean> {
   try {
     // ロールIDを取得
     const roleResult = await pool.query(
       "SELECT id FROM roles WHERE name = $1",
       [roleName]
     );
-    
+
     if (roleResult.rows.length === 0) {
       throw new Error(`ロール '${roleName}' が見つかりません`);
     }
-    
+
     const roleId = roleResult.rows[0].id;
-    
+
     // ユーザーにロールを割り当て（既に割り当てられている場合は無視）
     await pool.query(
       `INSERT INTO user_roles (user_id, role_id)
@@ -101,7 +107,7 @@ export async function assignRoleToUser(userId: string, roleName: Role): Promise<
        ON CONFLICT (user_id, role_id) DO NOTHING`,
       [userId, roleId]
     );
-    
+
     return true;
   } catch (error) {
     console.error("ロール割り当てエラー:", error);
@@ -110,26 +116,29 @@ export async function assignRoleToUser(userId: string, roleName: Role): Promise<
 }
 
 // ユーザーからロールを削除
-export async function removeRoleFromUser(userId: string, roleName: Role): Promise<boolean> {
+export async function removeRoleFromUser(
+  userId: string,
+  roleName: Role
+): Promise<boolean> {
   try {
     // ロールIDを取得
     const roleResult = await pool.query(
       "SELECT id FROM roles WHERE name = $1",
       [roleName]
     );
-    
+
     if (roleResult.rows.length === 0) {
       throw new Error(`ロール '${roleName}' が見つかりません`);
     }
-    
+
     const roleId = roleResult.rows[0].id;
-    
+
     // ユーザーからロールを削除
     await pool.query(
       "DELETE FROM user_roles WHERE user_id = $1 AND role_id = $2",
       [userId, roleId]
     );
-    
+
     return true;
   } catch (error) {
     console.error("ロール削除エラー:", error);
@@ -138,12 +147,14 @@ export async function removeRoleFromUser(userId: string, roleName: Role): Promis
 }
 
 // 全ロール一覧を取得
-export async function getAllRoles(): Promise<{id: number, name: string, description: string}[]> {
+export async function getAllRoles(): Promise<
+  { id: number; name: string; description: string }[]
+> {
   try {
     const result = await pool.query(
       "SELECT id, name, description FROM roles ORDER BY id"
     );
-    
+
     return result.rows;
   } catch (error) {
     console.error("ロール一覧取得エラー:", error);
@@ -152,12 +163,14 @@ export async function getAllRoles(): Promise<{id: number, name: string, descript
 }
 
 // 全権限一覧を取得
-export async function getAllPermissions(): Promise<{id: number, name: string, description: string}[]> {
+export async function getAllPermissions(): Promise<
+  { id: number; name: string; description: string }[]
+> {
   try {
     const result = await pool.query(
       "SELECT id, name, description FROM permissions ORDER BY id"
     );
-    
+
     return result.rows;
   } catch (error) {
     console.error("権限一覧取得エラー:", error);

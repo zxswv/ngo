@@ -1,42 +1,47 @@
+// src/app/lib/log-middleware.ts
 // ミドルウェア: ログ記録
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
 import { createLog, LogAction, TargetType } from "@/app/lib/logger";
+import { jwtVerify } from "jose";
+
+const JWT_SECRET = process.env.JWT_SECRET!;
+
+// JWT検証（ユーザーID取得）
+async function getUserIdFromRequest(req: NextRequest): Promise<string | null> {
+  const cookieStore = cookies();
+  const token = cookieStore.get("auth_token")?.value;
+  if (!token) return null;
+
+  try {
+    const secret = new TextEncoder().encode(JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    return typeof payload.userId === "string" ? payload.userId : null;
+  } catch (err) {
+    console.error("JWT検証エラー:", err);
+    return null;
+  }
+}
 
 // イベント操作をログに記録するミドルウェア
 export async function logEventAction(
   req: NextRequest,
   action: LogAction,
   targetId?: string,
-  details?: Record<string, any>
+  details?: Record<string, unknown>
 ) {
   try {
-    // ユーザー情報を取得
-    const cookieStore = cookies();
-    const token = cookieStore.get("auth_token")?.value;
-    let userId = null;
-    
-    if (token) {
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback_secret") as { userId: string, email: string };
-        userId = decoded.userId;
-      } catch (error) {
-        console.error("トークン検証エラー:", error);
-      }
-    }
-    
-    // ログを記録
+    const userId = await getUserIdFromRequest(req);
+
     await createLog({
-      user_id: userId,
+      user_id: userId ?? undefined,
       action,
       target_type: TargetType.EVENT,
       target_id: targetId,
-      details
+      details,
     });
   } catch (error) {
     console.error("ログ記録エラー:", error);
-    // エラーが発生してもアプリケーションは継続させる
   }
 }
 
@@ -46,7 +51,6 @@ export function withEventLogging(
 ) {
   return async (req: NextRequest) => {
     try {
-      // リクエストメソッドに基づいてアクションを決定
       let action: LogAction;
       switch (req.method) {
         case "POST":
@@ -62,16 +66,14 @@ export function withEventLogging(
         default:
           action = LogAction.VIEW;
       }
-      
-      // ハンドラを実行
+
       const response = await handler(req);
-      
-      // 成功した場合のみログを記録
+
       if (response.status >= 200 && response.status < 300) {
         const body = await req.json().catch(() => ({}));
         await logEventAction(req, action, body.id, body);
       }
-      
+
       return response;
     } catch (error) {
       console.error("API処理エラー:", error);

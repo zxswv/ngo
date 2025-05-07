@@ -1,3 +1,4 @@
+// app/api/auth/request/route.ts
 // API：認証リクエスト（ログ機能とロール連携強化版）
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "../../../DB/lib/db";
@@ -39,31 +40,44 @@ export async function POST(req: NextRequest) {
     // 新規ユーザーの場合、デフォルトロール（学生）を割り当て
     if (isNewUser) {
       await assignRoleToUser(userId.toString(), Role.STUDENT);
-      
+
       // 新規ユーザー作成をログに記録
       await createLog({
         action: LogAction.CREATE,
         target_type: TargetType.USER,
         target_id: userId.toString(),
-        details: { email, isNewUser: true }
+        details: { email, isNewUser: true },
       });
     }
 
-    const verifyUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/api/auth/verify?token=${token}`;
+    const verifyUrl = `${
+      process.env.BASE_URL || "http://localhost:3000"
+    }/api/auth/verify?token=${token}`;
+
+    // nodemailer は内部で SMTP over TLS (SSL) を使います。
+    // その際に、**自己署名証明書（または信頼されていない中間証明書）**を含むと、Node.js が SSL を拒否します。
+    // Gmailアカウントを使っていても、場合によっては社内プロキシや VPN 経由の証明書改ざんで失敗するケースもあります。
 
     const transporter = nodemailer.createTransport({
       service: "Gmail", // Gmail を使う場合（送信元設定は事前に必要）
       auth: {
-        user: process.env.MAIL_USER || 'test@example.com',
-        pass: process.env.MAIL_PASS || 'password',
+        user: process.env.MAIL_USER, //|| "hirohitoonoda@gmail.com",
+        pass: process.env.MAIL_PASS, //|| "password",
       },
+      tls: {
+        rejectUnauthorized: false, // ← 自己署名証明書を許可（開発のみ）
+      }, //   secure: true, // 本番環境では true にする
     });
 
-    await transporter.sendMail({
-      to: email,
-      from: process.env.MAIL_USER || 'test@example.com',
-      subject: "学校の部屋予約サイト - ログインリンク",
-      html: `
+    if (process.env.NODE_ENV === "development") {
+      console.log(`[開発] ログインリンク: ${verifyUrl}`);
+    } else {
+      // （検証中は送らずログ出力）
+      await transporter.sendMail({
+        to: email,
+        from: process.env.MAIL_USER || "hirohitoonoda@gmail.com",
+        subject: "学校の部屋予約サイト - ログインリンク",
+        html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #4a5568;">学校の部屋予約サイト</h2>
           <p>以下のリンクからログインしてください。このリンクは10分間有効です。</p>
@@ -77,19 +91,23 @@ export async function POST(req: NextRequest) {
           </p>
         </div>
       `,
-    });
+      });
+    }
 
     // ログイン試行をログに記録
     await createLog({
       action: LogAction.LOGIN,
       target_type: TargetType.USER,
       target_id: userId.toString(),
-      details: { email, method: "magic_link_request" }
+      details: { email, method: "magic_link_request" },
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("認証リクエストエラー:", error);
-    return NextResponse.json({ error: "認証リクエストに失敗しました" }, { status: 500 });
+    return NextResponse.json(
+      { error: "認証リクエストに失敗しました" },
+      { status: 500 }
+    );
   }
 }

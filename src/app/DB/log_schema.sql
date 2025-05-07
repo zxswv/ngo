@@ -1,4 +1,4 @@
-// データベースのログテーブル作成用SQL
+-- データベースのログテーブル作成用SQL
 CREATE TABLE logs (
   id SERIAL PRIMARY KEY,
   user_id TEXT,

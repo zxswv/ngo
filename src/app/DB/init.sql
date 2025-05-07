@@ -15,3 +15,6 @@ CREATE TABLE users (
   token_expires_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT now()
 );
+
+\i /docker-entrypoint-initdb.d/log_schema.sql;
+\i /docker-entrypoint-initdb.d/role_schema.sql;

@@ -90,6 +90,13 @@ SHOW TABLES; # テーブルの一覧を表示する
 # or
 DESCRIBE table_name; # テーブルの構造を表示する
 # or
+docker ps -a
+# or
+docker exec -it next.js-test-network-db psql -U tt -d DB  # コンテナ内でユーザー（ロール）を確認
+# or
+docker exec -it <正しいコンテナ名> psql -U postgres -d DB
+
+docker exec -it next.js-test-network-db ls -l /docker-entrypoint-initdb.d/
 
 ```
 

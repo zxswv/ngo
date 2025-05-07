@@ -19,7 +19,7 @@ export default function UserMenu() {
         const payload = JSON.parse(atob(token.split(".")[1]));
         setEmail(payload.email);
       } catch (e) {
-        console.error("Invalid JWT");
+        console.error("Invalid JWT", e);
       }
     }
   }, []);

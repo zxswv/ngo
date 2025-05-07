@@ -86,7 +86,7 @@ function UserMenu() {
         const payload = JSON.parse(atob(token.split(".")[1]));
         setEmail(payload.email);
       } catch (e) {
-        console.error("無効なトークンです");
+        console.error("無効なトークンです", e);
       }
     }
   }, []);

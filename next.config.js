@@ -1,15 +1,8 @@
+// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 必要な設定をここに追加します
-  experimental: {
-    // Turbopackを有効にする場合
-    // turboMode: true,
-    turbo: false, //,
-  },
-};
-module.exports = nextConfig;
+  serverExternalPackages: ["jsonwebtoken"],
 
-module.exports = {
   webpack(config, { dev }) {
     if (dev) {
       config.infrastructureLogging = {
@@ -19,3 +12,5 @@ module.exports = {
     return config;
   },
 };
+
+module.exports = nextConfig;

@@ -6,8 +6,8 @@ services:
     container_name: next.js #コンテナ名
     working_dir: /ngo #作業ディレクトリを/appに設定
     command: npm run dev -- -p 3100 #ポート3100で起動
-    # volumes:
-    #   - .:/pages
+    volumes:
+      - .:/app
     ports:
       - 3100:3100
     depends_on:
@@ -15,6 +15,7 @@ services:
 
   db: #コンテナ2
     image: postgres:14 #イメージ名
+    container_name: next.js-test-network-db
     # container_name: db #コンテナ名
     restart: always #常に再起動
     # command: --skip-grant-tables --skip-networking #MySQLサーバーは特定のセキュリティ機能を無効
@@ -24,8 +25,8 @@ services:
       POSTGRES_PASSWORD: tt #パスワード
       POSTGRES_DB: DB #データベース名
     volumes:
+      - ./src/app/DB/:/docker-entrypoint-initdb.d/ #/init.sql #初期化スクリプト
       - db:/var/lib/postgresql/data #データ永続化
-      - ./src/app/DB/init.sql:/docker-entrypoint-initd.d/init.sql #/init.sql #初期化スクリプト
     ports:
       - "5432:5432" #ホストのポート5432をコンテナのポート5432にマッピング
 
