@@ -8,8 +8,9 @@ import { getUserRoles } from "@/app/lib/rbac";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
+  const baseUrl = process.env.BASE_URL || "http://localhost:3100";
   if (!token) {
-    return NextResponse.redirect("/login?error=no_token");
+    return NextResponse.redirect(`${baseUrl}/login?error=no_token`);
   }
 
   try {
@@ -24,10 +25,10 @@ export async function GET(req: NextRequest) {
       await createLog({
         action: LogAction.LOGIN,
         target_type: TargetType.SYSTEM,
-        details: { error: "invalid_or_expired_token" }
+        details: { error: "invalid_or_expired_token" },
       });
-      
-      return NextResponse.redirect("/login?error=invalid");
+
+      return NextResponse.redirect(`${baseUrl}/login?error=invalid`);
     }
 
     // ユーザーのロールを取得
@@ -35,10 +36,10 @@ export async function GET(req: NextRequest) {
 
     // JWTにユーザー情報とロールを含める
     const jwtToken = jwt.sign(
-      { 
-        userId: user.id, 
+      {
+        userId: user.id,
         email: user.email,
-        roles: roles
+        roles: roles,
       },
       process.env.JWT_SECRET || "fallback_secret",
       {
@@ -58,33 +59,36 @@ export async function GET(req: NextRequest) {
       action: LogAction.LOGIN,
       target_type: TargetType.USER,
       target_id: user.id.toString(),
-      details: { 
-        email: user.email, 
+      details: {
+        email: user.email,
         method: "magic_link_verify",
-        roles: roles
-      }
+        roles: roles,
+      },
     });
 
-    const res = NextResponse.redirect("/");
+    const res = NextResponse.redirect(`${baseUrl}/`);
     res.cookies.set("auth_token", jwtToken, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 7, // 7日間
       path: "/",
       sameSite: "strict",
-      secure: process.env.NODE_ENV === "production"
+      secure: process.env.NODE_ENV === "production",
     });
 
     return res;
   } catch (error) {
     console.error("認証検証エラー:", error);
-    
+
     // エラーをログに記録
     await createLog({
       action: LogAction.LOGIN,
       target_type: TargetType.SYSTEM,
-      details: { error: "verification_error", message: (error as Error).message }
+      details: {
+        error: "verification_error",
+        message: (error as Error).message,
+      },
     });
-    
-    return NextResponse.redirect("/login?error=server");
+
+    return NextResponse.redirect(`${baseUrl}/login?error=server`);
   }
 }
