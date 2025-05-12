@@ -47,14 +47,14 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
     try {
       setIsLoading(true);
       const response = await fetch("/api/events");
-      
+
       if (!response.ok) {
         throw new Error("イベントの取得に失敗しました");
       }
-      
+
       const data = await response.json();
       setEventObjects(data.events || []);
-      
+
       // イベントオブジェクトを日付ごとのテキスト配列に変換
       const eventsByDate: Record<string, string[]> = {};
       data.events.forEach((event: Event) => {
@@ -63,7 +63,7 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
         }
         eventsByDate[event.date].push(event.text);
       });
-      
+
       setEvents(eventsByDate);
     } catch (error) {
       console.error("イベント取得エラー:", error);
@@ -81,7 +81,7 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
   const addEvent = async (dateKey: string, text: string) => {
     try {
       setIsLoading(true);
-      
+
       const response = await fetch("/api/events", {
         method: "POST",
         headers: {
@@ -89,16 +89,19 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
         },
         body: JSON.stringify({ date: dateKey, text }),
       });
-      
+
       if (!response.ok) {
+        const error = await response.json();
+        console.error("追加失敗:", error);
         throw new Error("イベントの追加に失敗しました");
       }
-      
+
       const data = await response.json();
-      
+      console.log("追加成功:", data);
+
       // 新しいイベントをステートに追加
-      setEventObjects(prev => [...prev, data.event]);
-      
+      setEventObjects((prev) => [...prev, data.event]);
+
       // 日付ごとのイベント配列も更新
       setEvents((prev) => ({
         ...prev,
@@ -115,15 +118,17 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
   const deleteEvent = async (dateKey: string, index: number) => {
     try {
       setIsLoading(true);
-      
+
       // 削除対象のイベントを特定
-      const eventsForDate = eventObjects.filter(event => event.date === dateKey);
+      const eventsForDate = eventObjects.filter(
+        (event) => event.date === dateKey
+      );
       if (!eventsForDate[index]) {
         throw new Error("削除対象のイベントが見つかりません");
       }
-      
+
       const eventId = eventsForDate[index].id;
-      
+
       const response = await fetch("/api/events", {
         method: "DELETE",
         headers: {
@@ -131,14 +136,14 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
         },
         body: JSON.stringify({ id: eventId }),
       });
-      
+
       if (!response.ok) {
         throw new Error("イベントの削除に失敗しました");
       }
-      
+
       // ステートからイベントを削除
-      setEventObjects(prev => prev.filter(event => event.id !== eventId));
-      
+      setEventObjects((prev) => prev.filter((event) => event.id !== eventId));
+
       // 日付ごとのイベント配列も更新
       setEvents((prev) => {
         const updated = { ...prev };

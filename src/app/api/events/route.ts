@@ -152,6 +152,7 @@ export async function DELETE(request: NextRequest) {
       Permission.DELETE_EVENTS
     );
 
+    // ログを記録
     if (!isOwnEvent && !canDeleteAll) {
       return NextResponse.json(
         { error: "このイベントを削除する権限がありません" },
@@ -173,7 +174,7 @@ export async function DELETE(request: NextRequest) {
         isOwnEvent,
       },
     });
-
+    // イベント削除の成功レスポンス
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("イベント削除エラー:", error);

@@ -1,7 +1,6 @@
 // 予定表示＆＋ボタン付きUI
 
 "use client";
-
 import { useCalendarContext } from "./context";
 
 export default function ScheduleSidebar() {
@@ -24,7 +23,7 @@ export default function ScheduleSidebar() {
     <div className="mt-6 border-t pt-4 animate-slideUp">
       <div className="mt-6 border-t pt-4">
         <div className="flex justify-between items-center mb-2">
-          <h2 className="text-lg font-bold">{key} の予定</h2>
+          <h2 className="text-lg font-bold">{key} の予定!!</h2>
           <button
             className="bg-blue-600 text-white px-3 py-1 rounded"
             onClick={openModal}
@@ -32,6 +31,8 @@ export default function ScheduleSidebar() {
             ＋
           </button>
         </div>
+
+        {/* 予定表示 */}
         {list.length === 0 ? (
           <p className="text-gray-500">予定はありません</p>
         ) : (
