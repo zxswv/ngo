@@ -1,3 +1,4 @@
+//src/app/api/events/route.ts
 export const runtime = "nodejs";
 // API: イベント管理（権限制御付き）
 import { NextRequest, NextResponse } from "next/server";

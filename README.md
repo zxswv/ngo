@@ -1,10 +1,16 @@
+# .env.local
+
+MAIL_USER=your@gmail.com #メールアドレス
+MAIL_PASS=your-gmail-app-password #Gmail のアプリパスワード
+
+BASE_URL=http://localhost:3100 #API の URL
+JWT_SECRET=super_strong_and_random_secret_key #JWT のシークレットキー
+
 # 実装予定
 
 ハンバーガーメニュー化
 予定表示
 認証メール送信＆トークン DB 保存の動作確認
-
-トークン検証 → JWT 発行
 
 ログイン後のカレンダー連携
 

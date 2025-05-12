@@ -31,9 +31,13 @@ async function verifyToken(
 
 // クッキーからユーザー情報を取得
 export async function getUserFromRequest(request: NextRequest) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
-  if (!token) return null;
+  // const cookieStore = await cookies();
+  // const token = cookieStore.get("auth_token")?.value;
+  const token = request.cookies.get("auth_token")?.value;
+  if (!token) {
+    console.warn("auth_token が見つかりません");
+    return null;
+  }
   return await verifyToken(token);
 }
 
